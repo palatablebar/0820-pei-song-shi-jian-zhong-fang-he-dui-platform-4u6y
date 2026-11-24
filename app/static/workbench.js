@@ -8,6 +8,8 @@ const profile = document.querySelector('#profile');
 const status = document.querySelector('#notice');
 const detail = document.querySelector('#review');
 const evidence = document.querySelector('#evidence');
+const deliveryForm = document.querySelector('#deliver');
+const deliveryNote = document.querySelector('#delivery');
 const stages = [...document.querySelectorAll('[data-stage]')];
 let stage = 'balance';
 let report, selected, batch, running = false;
@@ -101,6 +103,23 @@ detail.addEventListener('submit',event=>{
     const payload={status:event.submitter.value,revision:batch.revision,note:detail.elements.note.value};
     const result=await request(`/api/runs/${batch.id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     show(result,true); announce(result.status==='APPROVED'?'批次已签发':'批次已暂缓'); await refresh();
+  });
+});
+deliveryForm.addEventListener('submit',event=>{
+  event.preventDefault();
+  perform(async()=>{
+    const payload={handoff:deliveryForm.elements.handoff.value.trim()};
+    const result=await request('/api/deliveries',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if (result.status==='DELIVERED') {
+      deliveryNote.textContent=`已交付 ${result.size} 批 · 累计 ${result.count} · 回执 ${result.id.slice(0,10)}`;
+      announce('新结果已放出');
+    } else if (result.status==='BLOCKED') {
+      deliveryNote.textContent=`停在缺口前 · 待补齐批次 ${result.blocked.run_id.slice(0,10)}（${result.blocked.reason}）`;
+      announce('前序批次尚未签发，暂不越过',true);
+    } else {
+      deliveryNote.textContent='没有新的可交付批次';
+      announce('已是最新');
+    }
   });
 });
 preview(stage);

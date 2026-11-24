@@ -40,6 +40,12 @@
     <div class="review-actions"><button name="decision" value="HELD">暂缓</button><button class="action" name="decision" value="APPROVED">签发</button></div>
     <a id="evidence">下载复核证据</a>
   </form>
+  <form id="deliver" aria-label="下游续取">
+    <label for="handoff">交接号</label>
+    <input id="handoff" name="handoff" required maxlength="128" pattern="[A-Za-z0-9][A-Za-z0-9_.:-]*" placeholder="2026-11-24">
+    <div class="review-actions"><button class="action" type="submit">放出结果</button></div>
+    <p id="delivery" aria-live="polite"></p>
+  </form>
 </aside>
 {% endmacro %}
 {% macro status() %}

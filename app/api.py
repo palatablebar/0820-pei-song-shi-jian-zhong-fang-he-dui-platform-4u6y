@@ -1,6 +1,7 @@
 from flask import Blueprint, Response, current_app, jsonify, request
 
 from app.business import DomainIssue
+from app.delivery.service import deliver, receipt
 from app.evidence.render import artifact
 from app.inputs import read_input
 from app.modules.pipeline import run
@@ -44,3 +45,16 @@ def export(run_id):
             "Cache-Control": "no-store",
         },
     )
+
+
+@api.route("/deliveries", methods=["GET", "POST"])
+def deliveries():
+    store = current_app.extensions["runs"]
+    if request.method == "GET":
+        return jsonify(items=store.receipts())
+    return jsonify(deliver(store, request.get_json(silent=True)))
+
+
+@api.get("/deliveries/<receipt_id>")
+def delivery(receipt_id):
+    return jsonify(receipt(current_app.extensions["runs"], receipt_id))

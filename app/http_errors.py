@@ -17,6 +17,14 @@ LABELS = {
     "UNRESOLVED_ISSUES": "存在待处理差异",
     "SAMPLE_UNKNOWN": "样例不存在",
     "STAGE_UNKNOWN": "处理阶段不存在",
+    "DELIVERY_FIELDS": "请以 JSON 提交交接号",
+    "HANDOFF_REQUIRED": "请填写交接号",
+    "HANDOFF_INVALID": "交接号只能使用字母、数字、点、横线、下划线和冒号",
+    "RECEIPT_NOT_FOUND": "回执不存在",
+    "RECEIPT_STALE": "回执已不是最新交接，请从最新回执续取",
+    "RECEIPT_MISMATCH": "续取的数量或版本与回执不一致",
+    "RECEIPT_CORRUPT": "回执内容校验失败",
+    "RECEIPT_CONFLICT": "该位置已被另一份回执占用",
 }
 
 
@@ -24,10 +32,19 @@ def response(error):
     code = error.code
     status = (
         404
-        if code in {"RUN_NOT_FOUND", "SAMPLE_UNKNOWN", "STAGE_UNKNOWN"}
+        if code in {"RUN_NOT_FOUND", "SAMPLE_UNKNOWN", "STAGE_UNKNOWN", "RECEIPT_NOT_FOUND"}
         else (
             409
-            if code in {"STALE_REVIEW", "RUN_FINALIZED", "UNRESOLVED_ISSUES"}
+            if code
+            in {
+                "STALE_REVIEW",
+                "RUN_FINALIZED",
+                "UNRESOLVED_ISSUES",
+                "RECEIPT_STALE",
+                "RECEIPT_MISMATCH",
+                "RECEIPT_CORRUPT",
+                "RECEIPT_CONFLICT",
+            }
             else 413 if code == "FILE_TOO_LARGE" else 422
         )
     )

@@ -13,6 +13,18 @@
 | M5 运行对账 | 对照输入、采信和隔离行 | `POST /api/stages/balance` | `app/modules/reconcile.py` | `tests/test_reconcile.py` |
 | M6 批次复核 | 执行批次并签发或暂缓 | `POST /api/runs、PATCH /api/runs/<id>` | `app/review/service.py` | `tests/test_review.py` |
 | M7 证据交付 | 下载复核清单 | `GET /api/runs/<id>/evidence` | `app/evidence/render.py` | `tests/test_evidence.py` |
+| M8 下游续取 | 按签发与接收事实交付回执 | `POST /api/deliveries` | `app/delivery/service.py` | `tests/test_delivery.py` |
+
+## 交付规则
+
+| 编号 | 规则 | 处理 | 测试 |
+|---|---|---|---|
+| DEL-01 | 只交付已签发且对账一致的批次 | `app/delivery/service.py` | `tests/test_delivery.py::test_only_issued_reconciled_runs_are_delivered` |
+| DEL-02 | 前序缺口停住，不越过未接收批次 | `app/delivery/service.py` | `tests/test_delivery.py::test_out_of_order_issue_stops_before_the_gap` |
+| DEL-03 | 同一交接重试不新增回执 | `app/review/store.py` | `tests/test_delivery.py::test_retry_returns_same_receipt` |
+| DEL-04 | 回执只追加，旧回执原样保留 | `app/review/store.py` | `tests/test_delivery.py::test_old_receipt_is_preserved` |
+| DEL-05 | 续取数量与版本须与回执一致 | `app/delivery/service.py` | `tests/test_delivery.py::test_cursor_must_match_receipt` |
+| DEL-06 | 补齐缺口后从原回执接着取 | `app/delivery/service.py` | `tests/test_delivery.py::test_catching_up_continues_from_the_original_cursor` |
 
 ## 输入陷阱
 
