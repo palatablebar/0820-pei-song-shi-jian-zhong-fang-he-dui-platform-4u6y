@@ -1,0 +1,54 @@
+:root { --bg:#201f1b; --surface:#302d25; --ink:#f4eee2; --accent:#e2b995; --radius:0px;
+  --pad:16px; --gap:5px; --row:44px; --font-ui:"Monaco","PingFang SC",sans-serif;
+  --font-num:ui-monospace,monospace; --font-display:"Monaco","PingFang SC",sans-serif;
+  --line:color-mix(in srgb,var(--ink) 20%,var(--surface)); --sub:color-mix(in srgb,var(--ink) 78%,var(--surface));
+  --alert:#ffae99; --size:15px; --chart-height:106px; --button:color-mix(in srgb,var(--accent) 11%,var(--surface));
+  color-scheme:dark; }
+* {box-sizing:border-box} [hidden] {display:none!important}
+body.terminal {margin:0;background:var(--bg);color:var(--ink);font:var(--size)/1.55 var(--font-ui)}
+.terminal .desk {display:grid;grid-template-areas:"mast stages" "source source" "chart kpis" "results results" "inspection archive" "statusbar statusbar";grid-template-columns:1.15fr 1fr;gap:var(--gap);margin:auto;padding:clamp(14px,3vw,42px);max-width:1682px}
+.terminal .mast {grid-area:mast;background:var(--surface);padding:var(--pad);min-width:0}
+.terminal .mast h1 {font:700 clamp(26px,4vw,66px)/1.1 var(--font-display);margin:0;overflow-wrap:anywhere}
+.terminal .role {color:var(--accent);margin:0 0 11px;font-weight:700}
+.terminal .source {grid-area:source;display:flex;align-items:center;flex-wrap:wrap;gap:var(--gap);padding:var(--pad);background:var(--surface);border:1px solid var(--line);min-width:0}
+.terminal .source input {position:absolute;width:1px;height:1px;opacity:0}
+.terminal .source:has(input:focus-visible) .file {outline:2px solid var(--accent);outline-offset:3px}
+.terminal .file {cursor:pointer;color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.terminal #file-name {overflow-wrap:anywhere;max-width:100%}
+.terminal .stages {grid-area:stages;display:flex;gap:6px;flex-wrap:wrap;padding:var(--pad);background:var(--surface);min-width:0}
+.terminal button,.terminal select,.terminal textarea {font:inherit;color:inherit;border:1px solid var(--line);padding:.43em .75em;background:var(--button);border-radius:var(--radius);cursor:pointer}
+.terminal button:is(:hover,[aria-pressed="true"]),.terminal .action {background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.terminal button:disabled {opacity:.52;cursor:default} .terminal :focus-visible {outline:2px solid var(--accent);outline-offset:3px}
+.terminal a {color:var(--accent);text-underline-offset:.2em}
+.terminal .kpis {grid-area:kpis;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gap);min-width:0}
+.terminal .metric {background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:var(--pad);display:grid;align-content:center}
+.terminal .metric strong {font:600 clamp(22px,4vw,53px)/1.05 var(--font-num);font-variant-numeric:tabular-nums}
+.terminal .panel {background:var(--surface);padding:var(--pad);min-width:0;border:1px solid var(--line);border-radius:var(--radius)}
+.terminal .results {grid-area:results} .terminal .chart {grid-area:chart} .terminal .inspection {grid-area:inspection} .terminal .archive {grid-area:archive}
+.terminal h2 {font-size:18px;margin:0 0 10px} .terminal .panel-head {display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;justify-content:space-between}
+.terminal #counts,.terminal #run-status {color:var(--sub);overflow-wrap:anywhere}
+.terminal .scroll {overflow:auto;max-height:350px}
+.terminal table {border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;min-width:360px}
+.terminal th,.terminal td {text-align:left;height:var(--row);padding:5px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.terminal th {position:sticky;top:0;background:var(--surface);color:var(--sub)} .terminal td:nth-child(n+2):nth-child(-n+4) {text-align:right}
+.terminal .badge {color:var(--alert);font-size:.83em;padding:2px 4px;white-space:nowrap} .terminal .badge:is([data-result="READY"],[data-result="APPROVED"]) {color:var(--accent)}
+.terminal #detail {margin:0;max-height:230px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font: .91em/1.5 var(--font-num)}
+.terminal #history {list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:var(--gap);margin:0} .terminal #history li {display:flex;align-items:center}
+.terminal #review {margin-top:14px;max-width:580px} .terminal textarea {display:block;width:100%;min-height:54px;cursor:text}
+.terminal .review-actions {display:flex;gap:6px;margin:8px 0}
+.terminal .statusbar {grid-area:statusbar;display:flex;gap:14px;justify-content:space-between;border-top:1px solid var(--line);padding:10px 0}
+.terminal [data-failure="true"] {color:var(--alert)}
+.terminal .stages {align-content:center}
+.terminal .mast {border-left:8px solid var(--accent)}
+.terminal .badge {text-transform:uppercase;font-family:var(--font-num)}
+.terminal .archive button{border-style:dashed}
+.terminal .chart{border-top:2px solid var(--accent)}
+@media(max-width:1120px) { .terminal .desk {grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"mast mast" "source source" "stages stages" "kpis kpis" "results results" "chart inspection" "archive archive" "statusbar statusbar"} }
+@media(max-width:630px) { .terminal .desk {grid-template-columns:minmax(0,1fr);grid-template-areas:"mast" "source" "stages" "kpis" "chart" "results" "inspection" "archive" "statusbar"} .terminal .kpis {grid-template-columns:repeat(2,minmax(0,1fr))} .terminal .chart #visual {display:block!important} .terminal .stages button {width:auto} }
+@media print { .terminal .source,.terminal .stages,.terminal .archive,.terminal .statusbar {display:none} .terminal .desk {display:block} }
+
+.mark-piece {background:var(--accent);color:var(--surface);min-width:0}
+
+.replay-log {display:grid;gap:4px;font-family:var(--font-num)}
+.replay-event {border-left:4px solid var(--accent);background:var(--bg);padding:5px 8px}
+.replay-delete {border-left-color:var(--alert);color:var(--alert)}
